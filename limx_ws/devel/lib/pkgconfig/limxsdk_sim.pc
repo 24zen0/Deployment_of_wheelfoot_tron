@@ -1,8 +1,0 @@
-prefix=/root/limx_ws/devel
-
-Name: limxsdk_sim
-Description: Description of limxsdk_sim
-Version: 0.0.0
-Cflags: -I/root/limx_ws/src/tron1-gazebo-ros/limxsdk-sim/include
-Libs: -L${prefix}/lib 
-Requires: roscpp

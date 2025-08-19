@@ -1,8 +1,0 @@
-prefix=/root/limx_ws/install
-
-Name: limxsdk_sim
-Description: Description of limxsdk_sim
-Version: 0.0.0
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib 
-Requires: roscpp

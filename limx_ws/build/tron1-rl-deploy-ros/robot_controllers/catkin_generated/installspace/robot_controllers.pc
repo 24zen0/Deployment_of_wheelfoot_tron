@@ -1,8 +1,0 @@
-prefix=/root/limx_ws/install
-
-Name: robot_controllers
-Description: Description of robot_controllers
-Version: 0.0.1
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib -lrobot_controllers
-Requires: roscpp limxsdk_lowlevel robot_common robot_description controller_interface angles

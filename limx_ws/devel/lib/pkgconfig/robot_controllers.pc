@@ -1,8 +1,0 @@
-prefix=/root/limx_ws/devel
-
-Name: robot_controllers
-Description: Description of robot_controllers
-Version: 0.0.1
-Cflags: -I/root/limx_ws/src/tron1-rl-deploy-ros/robot_controllers/include
-Libs: -L${prefix}/lib -lrobot_controllers
-Requires: roscpp limxsdk_lowlevel robot_common robot_description controller_interface angles

@@ -1,8 +1,0 @@
-prefix=/root/limx_ws/install
-
-Name: pointfoot_gazebo
-Description: Description of pointfoot_gazebo
-Version: 0.0.0
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib 
-Requires: roscpp gazebo_ros_control hardware_interface realtime_tools limxsdk_sim

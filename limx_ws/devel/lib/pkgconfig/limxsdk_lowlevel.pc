@@ -1,8 +1,0 @@
-prefix=/root/limx_ws/devel
-
-Name: limxsdk_lowlevel
-Description: Description of limxsdk_lowlevel
-Version: 0.0.0
-Cflags: -I/root/limx_ws/src/limxsdk-lowlevel/include
-Libs: -L${prefix}/lib 
-Requires: roscpp
