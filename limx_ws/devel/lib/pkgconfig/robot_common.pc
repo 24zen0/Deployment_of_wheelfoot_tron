@@ -1,0 +1,8 @@
+prefix=/root/limx_ws/devel
+
+Name: robot_common
+Description: Description of robot_common
+Version: 0.0.1
+Cflags: -I/root/limx_ws/src/tron1-rl-deploy-ros/robot_common/include
+Libs: -L${prefix}/lib 
+Requires: 

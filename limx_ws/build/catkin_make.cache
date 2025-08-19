@@ -1,0 +1,2 @@
+limxsdk-lowlevel:robot-description:robot-visualization:tron1-gazebo-ros/limxsdk-sim:tron1-gazebo-ros/pointfoot_gazebo:tron1-rl-deploy-ros/robot_common:tron1-rl-deploy-ros/robot_controllers:tron1-rl-deploy-ros/robot_hw
+-DCATKIN_DEVEL_PREFIX=/root/limx_ws/devel -DCMAKE_INSTALL_PREFIX=/root/limx_ws/install -G Unix Makefiles

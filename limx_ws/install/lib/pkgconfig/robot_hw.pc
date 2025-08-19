@@ -1,0 +1,8 @@
+prefix=/root/limx_ws/install
+
+Name: robot_hw
+Description: Description of robot_hw
+Version: 0.0.1
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lrobot_hw
+Requires: roscpp limxsdk_lowlevel robot_common robot_description hardware_interface controller_manager urdf
