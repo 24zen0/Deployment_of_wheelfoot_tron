@@ -1,0 +1,3 @@
+[submodule "tron1-rl-isaacgym"]
+	path = tron1-rl-isaacgym
+	url = https://github.com/limxdynamics/tron1-rl-isaacgym.git
