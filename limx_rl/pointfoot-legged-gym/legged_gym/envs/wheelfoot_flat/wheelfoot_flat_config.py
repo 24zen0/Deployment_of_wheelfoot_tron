@@ -50,8 +50,8 @@ class BipedCfgWF(BaseConfig):
         vertical_scale = 0.005  # [m]
         border_size = 25  # [m]
         curriculum = True
-        static_friction = 0.4
-        dynamic_friction = 0.4
+        static_friction = 0.6  # 增加摩擦系数以更好地爬楼梯
+        dynamic_friction = 0.6  # 增加摩擦系数以更好地爬楼梯
         restitution = 0.8
         # rough terrain only:
         measure_heights = False
@@ -88,11 +88,11 @@ class BipedCfgWF(BaseConfig):
 
     class commands:
         curriculum = True
-        smooth_max_lin_vel_x = 2.0
-        smooth_max_lin_vel_y = 1.0
-        non_smooth_max_lin_vel_x = 1.0
-        non_smooth_max_lin_vel_y = 1.0
-        max_ang_vel_yaw = 3.0
+        smooth_max_lin_vel_x = 1.5  # 降低最大速度以更好地适应楼梯
+        smooth_max_lin_vel_y = 0.8
+        non_smooth_max_lin_vel_x = 0.8  # 楼梯地形使用更保守的速度
+        non_smooth_max_lin_vel_y = 0.8
+        max_ang_vel_yaw = 2.5  # 降低角速度
         curriculum_threshold = 0.75
         num_commands = 3  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
         resampling_time = 5.0  # time before command are changed[s]
@@ -100,11 +100,11 @@ class BipedCfgWF(BaseConfig):
         min_norm = 0.1
 
         class ranges:
-            lin_vel_x = [-1.0, 1.0]  # min max [m/s]
+            lin_vel_x = [-0.8, 0.8]  # 降低初始速度范围
             lin_vel_y = [0, 0]  # min max [m/s]
             # lin_vel_x = [-1.7, 1.7]  # min max [m/s]
             # lin_vel_y = [-1.7, 1.7]  # min max [m/s]
-            ang_vel_yaw = [-0.6, 0.6]  # min max [rad/s]
+            ang_vel_yaw = [-0.5, 0.5]  # 降低角速度范围
             heading = [-3.14159, 3.14159]
 
     class gait:
@@ -166,6 +166,16 @@ class BipedCfgWF(BaseConfig):
         decimation = 4
         user_torque_limit = 80.0
         max_power = 1000.0  # [W]
+        # Per-wheel calibration and straight-line helper (useful for joystick driving)
+        wheel_left_gain = 1.0
+        wheel_right_gain = 1.0
+        wheel_left_bias = 0.0
+        wheel_right_bias = 0.0
+        # When enabled, if yaw command is near zero and forward command is non-trivial,
+        # enforce equal wheel speeds to prevent slow yaw drift.
+        enforce_straight_on_deadband = True
+        yaw_deadband = 0.05
+        forward_deadband = 0.1
 
     class asset:
         file = "{LEGGED_GYM_ROOT_DIR}/resources/robots/WF_TRON1A/urdf/robot.urdf"
@@ -226,57 +236,35 @@ class BipedCfgWF(BaseConfig):
 
     class rewards:
         class scales:
-            # termination related rewards
-            keep_balance = 1.0
+            tracking_lin_vel = 1.0
+            tracking_lin_vel_enhance = 1
+            tracking_ang_vel = 1.0
 
-            # tracking related rewards
-            tracking_lin_vel = 4.0
-            tracking_ang_vel = 2.0
-            tracking_lin_vel_pb = 1.0
-            tracking_ang_vel_pb = 0.2
+            base_height = 1.0
+            lin_vel_z = -2.0
+            ang_vel_xy = -0.05
+            orientation = -10.0
 
-            # regulation related rewards
-            nominal_foot_position = 4.0
-            leg_symmetry = 0.5
-            same_foot_x_position = -50 # 0.5
-            same_foot_z_position = -100
-            lin_vel_z = -0.3
-            ang_vel_xy = -0.3
-            torques = -0.00016
-            dof_acc = -1.5e-7
-            action_rate = -0.03
-            dof_pos_limits = -2.0
-            collision = -50
-            action_smooth = -0.03
-            orientation = -12.0
-            feet_distance = -100
-            base_height = -20
+            dof_vel = -5e-5
+            dof_acc = -2.5e-7
+            torques = -0.0001
+            action_rate = -0.01
+            action_smooth = -0.01
+
+            collision = -1.0
+            dof_pos_limits = -1.0
 
         only_positive_rewards = False  # if true negative total rewards are clipped at zero (avoids early termination problems)
         clip_reward = 100
-        clip_single_reward = 5
-        tracking_sigma = 0.2  # tracking reward = exp(-error^2/sigma)
-        ang_tracking_sigma = 0.25  # tracking reward = exp(-error^2/sigma)
-        nominal_foot_position_tracking_sigma = 0.005
-        nominal_foot_position_tracking_sigma_wrt_v = 0.5
-        leg_symmetry_tracking_sigma = 0.001
-        foot_x_position_sigma = 0.001
-        height_tracking_sigma = 0.01
+        clip_single_reward = 1
+        tracking_sigma = 0.25  # tracking reward = exp(-error^2/sigma)
         soft_dof_pos_limit = (
-            0.95  # percentage of urdf limits, values above this limit are penalized
+            0.97  # percentage of urdf limits, values above this limit are penalized
         )
         soft_dof_vel_limit = 1.0
-        soft_torque_limit = 0.8
-        base_height_target = 0.6 + 0.1664
-        feet_height_target = 0.10
-        min_feet_distance = 0.32
-        max_feet_distance = 0.35
+        soft_torque_limit = 1.0
+        base_height_target = 0.18
         max_contact_force = 100.0  # forces above this value are penalized
-        kappa_gait_probs = 0.05
-        gait_force_sigma = 25.0
-        gait_vel_sigma = 0.25
-        gait_height_sigma = 0.005
-        feet_height_tracking_sigma = 0.005
 
     class normalization:
         class obs_scales:
@@ -382,6 +370,16 @@ class BipedCfgPPOWF(BaseConfig):
 
         # logging
         logger = "tensorboard"
+        exptid = ""
+        wandb_project = "legged_gym_WF"
+        save_interval = 500  # check for potential saves every this many iterations
+        experiment_name = "WF_TRON1A"
+        run_name = ""
+        # load and resume
+        resume = False
+        load_run = "-1"  # -1 = last run
+        checkpoint = -1  # -1 = last saved model
+        resume_path = "None"  # updated from load_run and chkpt
         exptid = ""
         wandb_project = "legged_gym_WF"
         save_interval = 500  # check for potential saves every this many iterations
